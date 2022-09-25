@@ -31,6 +31,7 @@ int main() {
                         x[j][w] = x[i][w];
                         x[i][w] = temp;
                     }
+                    break;
                 }
             }
         }
@@ -50,5 +51,6 @@ int main() {
     for(int i=0; i<n; i++){
         sum *= x[i][i];
     }
+    sum = sum*flipSign;
     printf("%f\n", sum);
 }
