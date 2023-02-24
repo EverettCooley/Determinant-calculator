@@ -3,54 +3,56 @@
 #include <sstream>
 
 int main() {
-    // input
-    std::string line;
-    std::getline(std::cin, line);
-    int n = atof(line.c_str());
-    std::string num;
-    double x[n][n];
-    for(int i=0; i<n; i++){
-        std::getline(std::cin, line);
-        std::istringstream ss(line);
-            int j = 0;
-        while(ss >> num){
-            x[i][j] = atof(num.c_str());;
-            j++;
+    std::string userInputLine;
+    std::getline(std::cin, userInputLine);
+    int matrixHeight = atof(userInputLine.c_str());
+    std::string curValueInMatrix;
+    double matrix[matrixHeight][matrixHeight];
+
+    for(int row=0; row<matrixHeight; row++){
+        std::getline(std::cin, userInputLine);
+        std::istringstream stringStream(userInputLine);
+        int column = 0;
+        while(stringStream >> curValueInMatrix){
+            matrix[row][column] = atof(curValueInMatrix.c_str());;
+            column++;
         }
     }
+
     // calculate
-    int flipSign = 1;
-    for(int i=0; i<n-1; i++){
+    int finalSumSign = 1;
+    for(int row=0; row<matrixHeight-1; row++){
         // swap rows
-        if(x[i][i] == 0.0){
-            for(int j=i+1; j<n; j++){
-                if(x[j][i] != 0.0){
-                    flipSign *= -1;
-                    for(int w=0; w<n; w++){
-                        double temp = x[j][w];
-                        x[j][w] = x[i][w];
-                        x[i][w] = temp;
+        if(matrix[row][row] == 0.0){
+            for(int intermediateRow=row+1; intermediateRow<matrixHeight; intermediateRow++){
+                if(matrix[intermediateRow][row] != 0.0){
+                    finalSumSign *= -1;
+                    for(int column=0; column<matrixHeight; column++){
+                        double temp = matrix[intermediateRow][column];
+                        matrix[intermediateRow][column] = matrix[row][column];
+                        matrix[row][column] = temp;
                     }
                     break;
                 }
             }
         }
         // zero points
-        for(int j=i+1; j<n; j++){
-            if(x[j][i] == 0.0){
+        for(int intermediateRow=row+1; intermediateRow<matrixHeight; intermediateRow++){
+            if(matrix[intermediateRow][row] == 0.0){
                 continue;
             }
-            double scaler = x[j][i]*-1/x[i][i];
-            for(int k=i; k<n; k++){
-                x[j][k] += x[i][k]*scaler;
+            double scaler = matrix[intermediateRow][row] * -1/matrix[row][row];
+            for(int currentColunn=row; currentColunn<matrixHeight; currentColunn++){
+                matrix[intermediateRow][currentColunn] += matrix[row][currentColunn]*scaler;
             }
         }
     }
-    // sum
-    double sum = 1.0;
-    for(int i=0; i<n; i++){
-        sum *= x[i][i];
+
+    // finalSum
+    double finalSum = 1.0;
+    for(int i=0; i<matrixHeight; i++){
+        finalSum *= matrix[i][i];
     }
-    sum = sum*flipSign;
-    printf("%f\n", sum);
+    finalSum = finalSum*finalSumSign;
+    printf("%f\n", finalSum);
 }
